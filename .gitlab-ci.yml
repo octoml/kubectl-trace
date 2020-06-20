@@ -1,4 +1,4 @@
-build:docker:
+build:init:docker:
   image: docker:18.09.7-git
   tags:
     - shell
@@ -7,3 +7,14 @@ build:docker:
   script:
     - docker build -t $INITCONTAINER_IMAGE_NAME -f ./build/Dockerfile.initcontainer ./build
     - docker push $INITCONTAINER_IMAGE_NAME
+
+build:trace:docker:
+  image: docker:18.09.7-git
+  tags:
+    - shell
+  variables:
+    BPFTRACEVERSION: "v0.9.4"
+    TRACECONTAINER_IMAGE_NAME: registry.gitlab.com/octoml/kubectl-trace/kubectl-trace-bpftrace:$CI_COMMIT_SHA
+  script:
+    - docker build --build-arg bpftraceversion=$BPFTRACEVERSION -t $TRACECONTAINER_IMAGE_NAME -f ./build/Dockerfile.tracerunner .
+    - docker push $TRACECONTAINER_IMAGE_NAME
