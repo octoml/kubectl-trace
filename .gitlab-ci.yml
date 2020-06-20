@@ -1,0 +1,9 @@
+build:docker:
+  image: docker:18.09.7-git
+  tags:
+    - shell
+  variables:
+    INITCONTAINER_IMAGE_NAME: registry.gitlab.com/octoml/kubectl-trace/kubectl-trace-init:$CI_COMMIT_SHA
+  script:
+    - docker build -t $INITCONTAINER_IMAGE_NAME -f ./build/Dockerfile.initcontainer ./build
+    - docker push $INITCONTAINER_IMAGE_NAME
